@@ -4,7 +4,7 @@ import prisma from '../utils/prisma.js';
 
 export const signup = async (req, res) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password, name, level } = req.body;
     
     // Validation
     if (!email || !password) {
@@ -15,7 +15,11 @@ export const signup = async (req, res) => {
       return res.status(400).json({ error: 'Password must be at least 6 characters long.' });
     }
 
-    const { token, user } = await signupUser(email, password, name);
+    if (!level || !['beginner', 'intermediate', 'advanced'].includes(level)) {
+      return res.status(400).json({ error: 'Valid level (beginner, intermediate, advanced) is required.' });
+    }
+
+    const { token, user } = await signupUser(email, password, name, level);
     res.status(201).json({ 
       message: 'User created successfully.',
       token, 

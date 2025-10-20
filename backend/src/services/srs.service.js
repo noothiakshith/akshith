@@ -1,12 +1,22 @@
 import prisma from '../utils/prisma.js';
+
 // --- Configuration for the SRS Algorithm ---
 const LEARNING_STEPS_MINUTES = [10, 1440]; // Step 1: 10 minutes, Step 2: 1 day (1440 mins)
 const INITIAL_EASE_FACTOR = 2.5;
 const MINIMUM_EASE_FACTOR = 1.3;
+const XP_PER_REVIEW = 3; // XP earned for each review
+const STREAK_THRESHOLD = 5; // Number of correct reviews needed for streak
+const MASTERY_THRESHOLD = 0.85; // 85% accuracy for mastery
 
 // --- Helper Functions ---
 const addMinutes = (date, minutes) => new Date(date.getTime() + minutes * 60000);
 const addDays = (date, days) => new Date(date.setDate(date.getDate() + days));
+
+// Calculate mastery level based on review history
+const calculateMastery = (timesCorrect, timesReviewed) => {
+  if (timesReviewed === 0) return 0;
+  return timesCorrect / timesReviewed;
+};
 
 /**
  * Fetches all flashcards that are due for review for a given user.

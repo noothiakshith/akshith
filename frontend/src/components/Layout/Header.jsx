@@ -9,13 +9,16 @@ import {
   Users, 
   Settings, 
   RotateCcw,
-  LogOut 
+  LogOut,
+  Target
 } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
+import NotificationCenter from '../Notifications/NotificationCenter'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: Home },
   { name: 'Chapters', href: '/chapters', icon: BookOpen },
+  { name: 'Adaptive Learning', href: '/adaptive', icon: Target },
   { name: 'Flashcards', href: '/flashcards', icon: Brain },
   { name: 'Review', href: '/review', icon: RotateCcw },
   { name: 'Achievements', href: '/achievements', icon: Trophy },
@@ -74,13 +77,7 @@ const Header = () => {
             </div>
 
             {/* Notifications */}
-            <button
-              type="button"
-              className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500"
-            >
-              <span className="sr-only">View notifications</span>
-              <Bell className="h-6 w-6" />
-            </button>
+            <NotificationCenter />
 
             {/* Separator */}
             <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" />

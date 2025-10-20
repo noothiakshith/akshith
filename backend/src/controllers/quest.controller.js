@@ -1,4 +1,5 @@
 import { processQuestSubmission } from '../services/progress.service.js';
+import adaptiveService from '../services/adaptive.service.js';
 import prisma from '../utils/prisma.js';
 
 export const getQuests = async (req, res) => {
@@ -52,7 +53,8 @@ export const submitQuestAnswer = async (req, res) => {
       return res.status(400).json({ error: 'userAnswer is required.' });
     }
 
-    const result = await processQuestSubmission({ userId, questId, userAnswer });
+    // Use adaptive learning service for enhanced processing
+    const result = await adaptiveService.processQuestWithAdaptation(userId, questId, userAnswer);
 
     res.status(200).json(result);
   } catch (error) {

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, User, BookOpen } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { authAPI } from '../../services/api'
 import useAuthStore from '../../store/authStore'
@@ -11,6 +11,7 @@ const Signup = () => {
     email: '',
     password: '',
     confirmPassword: '',
+    level: 'beginner',
   })
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -173,6 +174,32 @@ const Signup = () => {
               )}
             </button>
           </div>
+        </div>
+
+        <div>
+          <label htmlFor="level" className="block text-sm font-medium text-gray-700 mb-2">
+            Learning Level
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <BookOpen className="h-5 w-5 text-gray-400" />
+            </div>
+            <select
+              id="level"
+              name="level"
+              value={formData.level}
+              onChange={handleChange}
+              className="input pl-10 appearance-none"
+              required
+            >
+              <option value="beginner">Beginner - New to French</option>
+              <option value="intermediate">Intermediate - Some French knowledge</option>
+              <option value="advanced">Advanced - Fluent but want to improve</option>
+            </select>
+          </div>
+          <p className="mt-1 text-xs text-gray-500">
+            This will customize your learning experience and content difficulty
+          </p>
         </div>
 
         <button

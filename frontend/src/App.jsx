@@ -22,6 +22,7 @@ import Leaderboard from './pages/Leaderboard/Leaderboard'
 import Settings from './pages/Settings/Settings'
 import Review from './pages/Review/Review'
 import Quests from './pages/Quests/Quests'
+import AdaptiveDashboard from './pages/AdaptiveLearning/AdaptiveDashboard'
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -82,6 +83,7 @@ function App() {
         <Route path="achievements" element={<Achievements />} />
         <Route path="leaderboard" element={<Leaderboard />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="adaptive" element={<AdaptiveDashboard />} />
       </Route>
 
       {/* Fallback route */}

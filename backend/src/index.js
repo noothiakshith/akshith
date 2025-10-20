@@ -11,6 +11,8 @@ import flashcardRoutes from './routes/flashcard.routes.js';
 import leaderboardRoutes from './routes/leaderboard.routes.js';
 import reviewRoutes from './routes/review.routes.js';
 import achievementRoutes from './routes/achievement.routes.js';
+import notificationRoutes from './routes/notification.routes.js';
+import analyticsRoutes from './routes/analytics.routes.js';
 
 
 
@@ -64,6 +66,8 @@ app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/review', reviewRoutes);
 app.use('/api/achievements', achievementRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/analytics', analyticsRoutes);
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server is listening on http://localhost:${PORT}`);
