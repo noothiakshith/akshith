@@ -1,0 +1,281 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://neondb_owner:npg_xqAeshI01lDH@ep-gentle-math-ade00v7o-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+}
+
+// ============================================
+// 🔐 AUTHENTICATION
+// ============================================
+
+model User {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  name            String?
+  level           String    @default("beginner") // beginner | intermediate | advanced
+  xp              Int       @default(0)
+  coins           Int       @default(0)
+  streak          Int       @default(0)
+  lastActiveDate  DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  settings        UserSettings?
+  progress        Progress[]
+  flashcards      Flashcard[]
+  mistakes        Mistake[]
+  achievements    UserAchievement[]
+  notifications   Notification[]
+
+  @@index([email])
+}
+
+model OtpVerification {
+  id        Int      @id @default(autoincrement())
+  email     String
+  otpHash   String   // bcrypt hashed OTP
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email, expiresAt])
+}
+
+model UserSettings {
+  id                Int      @id @default(autoincrement())
+  userId            Int      @unique
+  darkMode          Boolean  @default(true)
+  notifications     Boolean  @default(true)
+  streakReminder    Boolean  @default(true)
+  reviewReminder    Boolean  @default(true)
+  soundEffects      Boolean  @default(true)
+  dailyGoalMinutes  Int      @default(10)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ============================================
+// 📚 CONTENT STRUCTURE
+// ============================================
+
+model Chapter {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  level       String   // beginner | intermediate | advanced
+  order       Int      // Sequential ordering
+  isUnlocked  Boolean  @default(false)
+  xpRequired  Int      @default(0) // XP needed to unlock
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  lessons Lesson[]
+
+  @@index([level, order])
+}
+
+model Lesson {
+  id          Int      @id @default(autoincrement())
+  chapterId   Int
+  title       String
+  content     String   @db.Text // AI-generated lesson content
+  vocabulary  Json?    // Array of {word, meaning, phonetic, example}
+  grammar     String?  @db.Text
+  level       String
+  order       Int
+  xpReward    Int      @default(10)
+  coinReward  Int      @default(5)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  chapter  Chapter    @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  quests   Quest[]
+  progress Progress[]
+
+  @@index([chapterId, order])
+  @@index([level])
+}
+
+// ============================================
+// 🎮 INTERACTIVE CHALLENGES
+// ============================================
+
+model Quest {
+  id         Int      @id @default(autoincrement())
+  lessonId   Int
+  type       String   // fill_blank | jumble | match | translate | multiple_choice
+  question   String   @db.Text
+  options    Json?    // For multiple choice/match questions
+  answer     String   @db.Text
+  hint       String?
+  difficulty String   @default("medium") // easy | medium | hard
+  order      Int
+  xpReward   Int      @default(5)
+  createdAt  DateTime @default(now())
+
+  lesson   Lesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  mistakes Mistake[]
+
+  @@index([lessonId, order])
+}
+
+// ============================================
+// 📝 FLASHCARDS & SRS
+// ============================================
+
+model Flashcard {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  front          String   // French word/phrase
+  back           String   @db.Text // English + phonetic + example
+  difficulty     String   @default("new") // new | learning | review | mastered
+  easeFactor     Float    @default(2.5) // SRS algorithm parameter
+  interval       Int      @default(0) // Days until next review
+  repetitions    Int      @default(0)
+  nextReview     DateTime @default(now())
+  lastReviewed   DateTime?
+  timesReviewed  Int      @default(0)
+  timesCorrect   Int      @default(0)
+  source         String?  // "lesson" | "mistake" | "manual"
+  sourceId       Int?     // lessonId or mistakeId
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, nextReview])
+  @@index([userId, difficulty])
+}
+
+// ============================================
+// 📊 PROGRESS TRACKING
+// ============================================
+
+model Progress {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  lessonId        Int
+  completed       Boolean  @default(false)
+  accuracy        Float    @default(0.0) // Percentage
+  attempts        Int      @default(0)
+  questsCompleted Int      @default(0)
+  questsTotal     Int      @default(0)
+  timeSpent       Int      @default(0) // Seconds
+  xpEarned        Int      @default(0)
+  coinsEarned     Int      @default(0)
+  completedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId, completed])
+}
+
+model Mistake {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  questId      Int
+  userAnswer   String
+  correctAnswer String
+  category     String?  // grammar | vocabulary | conjugation | etc.
+  reviewed     Boolean  @default(false)
+  reviewCount  Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quest Quest @relation(fields: [questId], references: [id], onDelete: Cascade)
+
+  @@index([userId, reviewed])
+  @@index([userId, category])
+}
+
+// ============================================
+// 🏆 GAMIFICATION
+// ============================================
+
+model Achievement {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  icon        String?
+  category    String   // streak | xp | accuracy | completion
+  condition   Json     // {type: "streak", value: 7}
+  coinReward  Int      @default(10)
+  createdAt   DateTime @default(now())
+
+  userAchievements UserAchievement[]
+
+  @@index([category])
+}
+
+model UserAchievement {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  achievementId Int
+  unlockedAt    DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+  @@index([userId])
+}
+
+model Streak {
+  id              Int      @id @default(autoincrement())
+  userId          Int      @unique
+  currentStreak   Int      @default(0)
+  longestStreak   Int      @default(0)
+  lastActivityDate DateTime?
+  freezeCount     Int      @default(0) // Streak freezes available
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ============================================
+// 🔔 NOTIFICATIONS
+// ============================================
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  title     String
+  message   String
+  type      String   // streak | review | achievement | chapter_unlock
+  read      Boolean  @default(false)
+  actionUrl String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
+}
+
+// ============================================
+// 🧪 AI GENERATION LOGS (Optional)
+// ============================================
+
+model AiGenerationLog {
+  id         Int      @id @default(autoincrement())
+  type       String   // lesson | quest | flashcard | feedback
+  prompt     String   @db.Text
+  response   String   @db.Text
+  model      String   @default("llama3.2")
+  duration   Int?     // milliseconds
+  successful Boolean  @default(true)
+  error      String?  @db.Text
+  createdAt  DateTime @default(now())
+
+  @@index([type, createdAt])
+}
