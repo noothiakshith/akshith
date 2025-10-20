@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node src/index.js",
     "start": "node src/index.js",
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed.js",
+    "test-ollama": "node scripts/test-ollama.js",
+    "regenerate-chapters": "node scripts/regenerate-chapters.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -25,7 +27,7 @@
     "jsonwebtoken": "^9.0.2",
     "mailtrap": "^4.3.0",
     "nodemailer": "^6.9.4",
-    "ollama": "^0.5.9",
+    "ollama": "^0.5.18",
     "pg": "^8.16.3"
   },
   "devDependencies": {

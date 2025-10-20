@@ -11,7 +11,7 @@ import {
   Star,
   BarChart3
 } from 'lucide-react'
-import { api } from '../../services/api'
+import api from '../../services/api'
 import toast from 'react-hot-toast'
 
 const AdaptiveDashboard = () => {
