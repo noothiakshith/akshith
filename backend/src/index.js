@@ -1,4 +1,5 @@
 import express, { json } from 'express';
+import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import settingsRoutes from './routes/setting.routes.js';
 import authRoutes from './routes/auth.routes.js';
@@ -18,8 +19,21 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Set connection limits
+app.set('trust proxy', 1);
+
+// Rate limiting middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000, // limit each IP to 1000 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Middleware
-app.use(json());
+app.use(limiter);
+app.use(json({ limit: '10mb' }));
 
 // CORS middleware
 app.use((req, res, next) => {

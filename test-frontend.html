@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>API Connection Test</h1>
+    <button onclick="testAPI()">Test API Connection</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            try {
+                // Test chapters endpoint (no auth required)
+                const response = await fetch('http://localhost:3001/api/chapters');
+                const data = await response.json();
+                document.getElementById('result').innerHTML = 
+                    '<h2>Chapters Data:</h2><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    '<h2>Error:</h2><p>' + error.message + '</p>';
+            }
+        }
+
+        async function testAuth() {
+            try {
+                const response = await fetch('http://localhost:3001/api/auth/signin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'test@test.com',
+                        password: 'password123'
+                    })
+                });
+                const data = await response.json();
+                document.getElementById('result').innerHTML = 
+                    '<h2>Auth Response:</h2><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    '<h2>Auth Error:</h2><p>' + error.message + '</p>';
+            }
+        }
+    </script>
+    
+    <button onclick="testAuth()">Test Authentication</button>
+</body>
+</html>
