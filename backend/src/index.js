@@ -9,7 +9,7 @@ import dashboardRoutes from './routes/dashboard.routes.js';
 import flashcardRoutes from './routes/flashcard.routes.js';
 import leaderboardRoutes from './routes/leaderboard.routes.js';
 import reviewRoutes from './routes/review.routes.js';
-// ...existing middleware and routes
+import achievementRoutes from './routes/achievement.routes.js';
 
 
 
@@ -20,6 +20,19 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(json());
+
+// CORS middleware
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
 
 // Health check
 app.get('/api/status', (req, res) => {
@@ -35,8 +48,8 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/flashcards', flashcardRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/settings', settingsRoutes);
-// ... other app.use calls
 app.use('/api/review', reviewRoutes);
+app.use('/api/achievements', achievementRoutes);
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server is listening on http://localhost:${PORT}`);

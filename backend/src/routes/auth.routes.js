@@ -1,11 +1,12 @@
 // src/routes/auth.routes.js
 import express from 'express';
-import { sendOtp, verifyOtp } from '../controllers/auth.controller.js';
+import { signup, signin, getProfile } from '../controllers/auth.controller.js';
+import { protect } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
 
-router.post('/send-otp', sendOtp);
-router.post('/verify-otp', verifyOtp);
+router.post('/signup', signup);
+router.post('/signin', signin);
+router.get('/profile', protect, getProfile);
 
-// ✅ MUST use default export for ES modules
 export default router;

@@ -1,28 +1,74 @@
 // src/controllers/auth.controller.js
-import { generateOtp, verifyUserOtp } from '../services/auth.service.js';
+import { signupUser, signinUser } from '../services/auth.service.js';
+import prisma from '../utils/prisma.js';
 
-export const sendOtp = async (req, res) => {
+export const signup = async (req, res) => {
   try {
-    const { email } = req.body;
-    if (!email) return res.status(400).json({ error: 'Email is required.' });
+    const { email, password, name } = req.body;
+    
+    // Validation
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required.' });
+    }
+    
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters long.' });
+    }
 
-    await generateOtp(email);
-    res.status(200).json({ message: 'OTP sent successfully.' });
+    const { token, user } = await signupUser(email, password, name);
+    res.status(201).json({ 
+      message: 'User created successfully.',
+      token, 
+      user 
+    });
   } catch (error) {
-    console.error('Error in sendOtp controller:', error);
-    res.status(500).json({ error: 'Could not send OTP email.' });
+    console.error('Error in signup controller:', error);
+    res.status(400).json({ error: error.message });
   }
 };
 
-export const verifyOtp = async (req, res) => {
+export const signin = async (req, res) => {
   try {
-    const { email, otp } = req.body;
-    if (!email || !otp) return res.status(400).json({ error: 'Email and OTP are required.' });
+    const { email, password } = req.body;
+    
+    // Validation
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required.' });
+    }
 
-    const { token, user } = await verifyUserOtp(email, otp);
-    res.status(200).json({ token, user });
+    const { token, user } = await signinUser(email, password);
+    res.status(200).json({ 
+      message: 'Signed in successfully.',
+      token, 
+      user 
+    });
   } catch (error) {
-    console.error('Error in verifyOtp controller:', error);
-    res.status(400).json({ error: error.message });
+    console.error('Error in signin controller:', error);
+    res.status(401).json({ error: error.message });
+  }
+};
+
+export const getProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        settings: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    // Remove password from response
+    const { password: _, ...userWithoutPassword } = user;
+    
+    res.status(200).json({ user: userWithoutPassword });
+  } catch (error) {
+    console.error('Error in getProfile controller:', error);
+    res.status(500).json({ error: 'Could not fetch user profile.' });
   }
 };

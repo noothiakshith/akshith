@@ -15,6 +15,7 @@ datasource db {
 model User {
   id              Int       @id @default(autoincrement())
   email           String    @unique
+  password        String    // bcrypt hashed password
   name            String?
   level           String    @default("beginner") // beginner | intermediate | advanced
   xp              Int       @default(0)
@@ -35,16 +36,7 @@ model User {
   @@index([email])
 }
 
-model OtpVerification {
-  id        Int      @id @default(autoincrement())
-  email     String
-  otpHash   String   // bcrypt hashed OTP
-  expiresAt DateTime
-  used      Boolean  @default(false)
-  createdAt DateTime @default(now())
 
-  @@index([email, expiresAt])
-}
 
 model UserSettings {
   id                Int      @id @default(autoincrement())
