@@ -35,7 +35,13 @@ const Flashcards = () => {
     
     try {
       const flashcard = reviewFlashcards[currentCardIndex]
-      await flashcardsAPI.submitReview(flashcard.id, { difficulty })
+      // Map difficulty to SRS quality rating (0-5)
+      const qualityMap = {
+        'hard': 1,    // Difficult recall
+        'medium': 3,  // Correct with effort
+        'easy': 5     // Perfect recall
+      }
+      await flashcardsAPI.submitReview(flashcard.id, { quality: qualityMap[difficulty] })
       
       // Move to next card or finish
       if (currentCardIndex < reviewFlashcards.length - 1) {

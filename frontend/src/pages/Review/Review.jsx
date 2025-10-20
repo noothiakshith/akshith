@@ -159,7 +159,8 @@ const Review = () => {
               {currentQuestion.question}
             </h3>
             <div className="space-y-2">
-              {currentQuestion.options?.map((option, index) => (
+              {Array.isArray(currentQuestion.options) && currentQuestion.options.length > 0 ? (
+                currentQuestion.options.map((option, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedOption(option)}
@@ -172,7 +173,10 @@ const Review = () => {
                 >
                   {option}
                 </button>
-              ))}
+              ))
+            ) : (
+              <p className="text-sm text-red-500">No options available for this question</p>
+            )}
             </div>
           </div>
         )

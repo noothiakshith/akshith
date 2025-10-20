@@ -25,13 +25,26 @@ export const generateReviewQuiz = async (userId) => {
     throw new Error("No mistakes available to review. Great job!");
   }
 
-  return mistakes.map((mistake) => ({
-    mistakeId: mistake.id, // needed by frontend to submit
-    question: mistake.quest.question,
-    type: mistake.quest.type,
-    options: mistake.quest.options,
-    // answer not sent to client
-  }));
+  return mistakes.map((mistake) => {
+    // Parse options if they exist and the type is multiple_choice
+    let options = null;
+    if (mistake.quest.type === 'multiple_choice' && mistake.quest.options) {
+      try {
+        options = JSON.parse(mistake.quest.options);
+      } catch (e) {
+        // If parsing fails, try splitting by comma as fallback
+        options = mistake.quest.options.split(',').map(opt => opt.trim());
+      }
+    }
+
+    return {
+      mistakeId: mistake.id,
+      question: mistake.quest.question,
+      type: mistake.quest.type,
+      options: options,
+      // answer not sent to client
+    };
+  });
 };
 
 /**
