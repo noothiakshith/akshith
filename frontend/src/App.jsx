@@ -21,6 +21,7 @@ import Achievements from './pages/Achievements/Achievements'
 import Leaderboard from './pages/Leaderboard/Leaderboard'
 import Settings from './pages/Settings/Settings'
 import Review from './pages/Review/Review'
+import Quests from './pages/Quests/Quests'
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -76,6 +77,7 @@ function App() {
         <Route path="chapters/:id" element={<ChapterDetail />} />
         <Route path="lessons/:id" element={<Lesson />} />
         <Route path="flashcards" element={<Flashcards />} />
+        <Route path="quests" element={<Quests />} />
         <Route path="review" element={<Review />} />
         <Route path="achievements" element={<Achievements />} />
         <Route path="leaderboard" element={<Leaderboard />} />

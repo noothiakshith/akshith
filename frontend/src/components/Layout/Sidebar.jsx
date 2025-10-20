@@ -7,13 +7,15 @@ import {
   Users, 
   Settings, 
   RotateCcw,
-  LogOut 
+  LogOut,
+  Target
 } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: Home },
   { name: 'Chapters', href: '/chapters', icon: BookOpen },
+  { name: 'Quests', href: '/quests', icon: Target },
   { name: 'Flashcards', href: '/flashcards', icon: Brain },
   { name: 'Review', href: '/review', icon: RotateCcw },
   { name: 'Achievements', href: '/achievements', icon: Trophy },

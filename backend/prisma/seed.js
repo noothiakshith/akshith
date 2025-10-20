@@ -220,6 +220,29 @@ async function main() {
                   answer: 'dix',
                   order: 3,
                 },
+                {
+                  type: 'match',
+                  question: 'Match the French numbers with their English equivalents',
+                  options: { 
+                    pairs: [
+                      { french: 'un', english: 'one' },
+                      { french: 'deux', english: 'two' },
+                      { french: 'trois', english: 'three' },
+                      { french: 'quatre', english: 'four' }
+                    ]
+                  },
+                  answer: 'un-one,deux-two,trois-three,quatre-four',
+                  order: 4,
+                },
+                {
+                  type: 'jumble',
+                  question: 'Arrange these words to form: "I have five cats"',
+                  options: { 
+                    words: ['J\'ai', 'cinq', 'chats']
+                  },
+                  answer: 'J\'ai cinq chats',
+                  order: 5,
+                },
               ],
             },
           },
@@ -242,6 +265,34 @@ async function main() {
                   question: 'Translate "It is 3 oclock"',
                   answer: 'Il est trois heures',
                   order: 2,
+                },
+                {
+                  type: 'fill_blank',
+                  question: 'Complete: "Il est __ heures" (It is 2 o\'clock)',
+                  answer: 'deux',
+                  order: 3,
+                },
+                {
+                  type: 'match',
+                  question: 'Match the time expressions',
+                  options: { 
+                    pairs: [
+                      { french: 'Il est midi', english: 'It is noon' },
+                      { french: 'Il est minuit', english: 'It is midnight' },
+                      { french: 'Il est une heure', english: 'It is one o\'clock' }
+                    ]
+                  },
+                  answer: 'Il est midi-It is noon,Il est minuit-It is midnight,Il est une heure-It is one o\'clock',
+                  order: 4,
+                },
+                {
+                  type: 'jumble',
+                  question: 'Arrange to form: "What time is it?"',
+                  options: { 
+                    words: ['Quelle', 'heure', 'est-il', '?']
+                  },
+                  answer: 'Quelle heure est-il ?',
+                  order: 5,
                 },
               ],
             },
@@ -285,6 +336,99 @@ async function main() {
                   question: 'The word for "sister" is __.',
                   answer: 'sœur',
                   order: 3,
+                },
+                {
+                  type: 'match',
+                  question: 'Match family members with their French translations',
+                  options: { 
+                    pairs: [
+                      { french: 'père', english: 'father' },
+                      { french: 'mère', english: 'mother' },
+                      { french: 'fils', english: 'son' },
+                      { french: 'fille', english: 'daughter' }
+                    ]
+                  },
+                  answer: 'père-father,mère-mother,fils-son,fille-daughter',
+                  order: 4,
+                },
+                {
+                  type: 'jumble',
+                  question: 'Arrange to form: "My family is big"',
+                  options: { 
+                    words: ['Ma', 'famille', 'est', 'grande']
+                  },
+                  answer: 'Ma famille est grande',
+                  order: 5,
+                },
+              ],
+            },
+          },
+          {
+            title: 'Lesson 2: Quest Practice',
+            content: 'Practice different types of French exercises.',
+            level: 'intermediate',
+            order: 2,
+            quests: {
+              create: [
+                {
+                  type: 'fill_blank',
+                  question: 'Je __ français (I speak French)',
+                  answer: 'parle',
+                  hint: 'First person singular of "parler"',
+                  difficulty: 'medium',
+                  order: 1,
+                },
+                {
+                  type: 'fill_blank',
+                  question: 'Elle __ une pomme (She eats an apple)',
+                  answer: 'mange',
+                  hint: 'Third person singular of "manger"',
+                  difficulty: 'medium',
+                  order: 2,
+                },
+                {
+                  type: 'match',
+                  question: 'Match the French verbs with their English meanings',
+                  options: { 
+                    pairs: [
+                      { french: 'manger', english: 'to eat' },
+                      { french: 'boire', english: 'to drink' },
+                      { french: 'dormir', english: 'to sleep' },
+                      { french: 'courir', english: 'to run' },
+                      { french: 'lire', english: 'to read' }
+                    ]
+                  },
+                  answer: 'manger-to eat,boire-to drink,dormir-to sleep,courir-to run,lire-to read',
+                  difficulty: 'medium',
+                  order: 3,
+                },
+                {
+                  type: 'jumble',
+                  question: 'Arrange to form: "I like to read books"',
+                  options: { 
+                    words: ['J\'aime', 'lire', 'des', 'livres']
+                  },
+                  answer: 'J\'aime lire des livres',
+                  difficulty: 'medium',
+                  order: 4,
+                },
+                {
+                  type: 'jumble',
+                  question: 'Arrange to form: "The cat is sleeping"',
+                  options: { 
+                    words: ['Le', 'chat', 'dort']
+                  },
+                  answer: 'Le chat dort',
+                  difficulty: 'easy',
+                  order: 5,
+                },
+                {
+                  type: 'fill_blank',
+                  question: 'Nous __ à l\'école (We go to school)',
+                  answer: 'allons',
+                  hint: 'First person plural of "aller"',
+                  difficulty: 'hard',
+                  order: 6,
                 },
               ],
             },

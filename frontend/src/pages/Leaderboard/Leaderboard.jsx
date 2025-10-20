@@ -13,10 +13,7 @@ const Leaderboard = () => {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        console.log('Fetching leaderboard...')
         const response = await leaderboardAPI.get()
-        console.log('Leaderboard response:', response)
-        console.log('Leaderboard data:', response.data)
         // Handle both direct array and wrapped object responses
         const leaderboardData = response.data.leaderboard || response.data
         setLeaderboard(Array.isArray(leaderboardData) ? leaderboardData : [])

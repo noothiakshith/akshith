@@ -64,7 +64,6 @@ const processQuestSubmission = async ({ userId, questId, userAnswer }) => {
           }),
         ]
       : []),
-      await checkAchievements(userId),
     // c. Create mistake + flashcard if incorrect
     ...(!isCorrect
       ? [
@@ -90,6 +89,11 @@ const processQuestSubmission = async ({ userId, questId, userAnswer }) => {
         ]
       : []),
   ]);
+
+  // 2.5️⃣ Check achievements if correct answer
+  if (isCorrect) {
+    await checkAchievements(userId);
+  }
 
   // 3️⃣ Recalculate accuracy
   const finalProgress = await prisma.progress.update({

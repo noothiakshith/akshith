@@ -17,7 +17,6 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = useAuthStore.getState().token
-    console.log('API Request:', config.url, 'Token:', token ? 'Present' : 'Missing')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -30,12 +29,8 @@ api.interceptors.request.use(
 
 // Response interceptor to handle errors
 api.interceptors.response.use(
-  (response) => {
-    console.log('API Response:', response.config.url, 'Status:', response.status)
-    return response
-  },
+  (response) => response,
   (error) => {
-    console.error('API Error:', error.config?.url, 'Status:', error.response?.status, 'Message:', error.response?.data)
     if (error.response?.status === 401) {
       useAuthStore.getState().logout()
       toast.error('Session expired. Please login again.')
@@ -69,6 +64,7 @@ export const lessonsAPI = {
 
 // Quests API
 export const questsAPI = {
+  getAll: () => api.get('/quests'),
   submitAnswer: (id, data) => api.post(`/quests/${id}/submit`, data),
 }
 
